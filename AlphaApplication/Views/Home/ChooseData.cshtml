@@ -1,0 +1,30 @@
+﻿@model AlphaApplication.Models.RoomReservation
+
+@{
+    ViewBag.Title = "Выбрать дату и время";
+}
+
+<h2>ChooseData</h2>
+
+
+<div>
+    <form method="post">
+        <input type="hidden" value="@ViewBag.RoomId" name="RoomId" />
+        <input type="hidden" value="@ViewBag.UserId" name="UserId" />
+        <input type="hidden" value="NULL" name="Id" />
+        <div><p>Введите начальное время:</p></div>
+        <div>
+            <input type="datetime-local" name="TimeStart" />
+        </div>
+        <div><p><br />Введите конечное время:</p></div>
+        <div><input type="datetime-local" name="TimeEnd" /></div>
+        <div><p><br />Название мероприятия:</p></div>
+        <div><input type="text" name="EventDescription" /></div>
+        <p><font color="red" size="3">@ViewBag.error</font></p>
+        <br /><input type="submit" value="Забронировать" />
+    </form>
+</div>
+<div>
+    <br />
+    @Html.ActionLink("Назад к выбору комнаты", "Index")
+</div>

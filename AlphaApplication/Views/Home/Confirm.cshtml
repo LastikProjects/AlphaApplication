@@ -1,0 +1,66 @@
+﻿
+    <div id="searchresults">
+        <h2>Поступающие заявки</h2>
+        <p><font color="red" size="3">@ViewBag.message</font></p>
+        <div>
+            <table border="1" CELLPADDING=10 CELLSPACING=0>
+                <thead>
+                    <tr>
+                        <td><div>Комната №</div></td>
+                        <td><div>Email бронирующего</div></td>
+                        <td><div>Начало брони</div></td>
+                        <td><div>Конец брони</div></td>
+                        <td><div>Принять</div></td>
+                        <td><div>Отклонить</div></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rr in ViewBag.RoomReservations)
+                    {
+                        if (!rr.Confirmation && rr.TimeEnd > DateTime.Now)
+                        {
+                            <tr>
+                                @foreach (var mr in ViewBag.MeetingRooms)
+                                {
+                                    if (rr.RoomId == mr.Id)
+                                    {
+                                        <td><div>@mr.NumberRoom</div></td>
+                                    }
+                                }            
+                                @foreach (var users in ViewBag.Users)
+                                {
+                                    if (users.Id == rr.UserId)
+                                    {
+                                        <td><div>@users.Email</div></td>
+                                        break;
+                                    }
+                                }
+                                <td><div>@rr.TimeStart</div></td>
+                                <td><div>@rr.TimeEnd</div></td>
+                                <td>
+                                    <div>
+                                        @using (Ajax.BeginForm("Confirm", new AjaxOptions { UpdateTargetId = "results" }))
+                                        {
+                                            <input type="hidden" value="@rr.Id" name="Id" />
+                                            <input type="submit" value="Подтвердить" />
+                                        }
+
+
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        @using (Ajax.BeginForm("Delete", new AjaxOptions { UpdateTargetId = "results" }))
+                                        {
+                                            <input type="hidden" value="@rr.Id" name="Id" />
+                                            <input type="submit" value="Отклонить" />
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

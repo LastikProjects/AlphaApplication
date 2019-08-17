@@ -1,0 +1,164 @@
+﻿
+<head>
+    <link href="StyleSheetTable.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    table {
+        width: 100%; /* Ширина таблицы */
+        border: 1px solid black; /* Рамка вокруг таблицы */
+        margin: auto; /* Выравниваем таблицу по центру окна  */
+    }
+
+    td, th {
+        padding: 3px; /* Поля вокруг содержимого таблицы */
+        border: 1px solid #000; /* Параметры рамки */
+        text-align: center;
+    }
+    th {
+        background: #afd792; /* Цвет фона */
+        color: #333; /* Цвет текста */
+    }
+
+    tbody tr:hover {
+        background: #f3bd48/*fdfbe4*/; /* Цвет фона при наведении */
+        color: #fff; /* Цвет текста при наведении */
+    }
+
+    td:hover {
+        cursor: pointer;
+    }
+</style>
+
+@if (ViewBag.IsOfficeManager)
+{
+    <br />
+    <a href="AddRoom">Добавить комнату</a>
+    <br />
+    <a href="AddManager">Добавить менеджеров</a>
+    <div>
+        <br />
+        <table border="1" CELLPADDING=10 CELLSPACING=0>
+            <thead>
+                <tr>
+                    <td><div><p></p>Комната №<p></p></div></td>
+                    <td><div>Количество мест</div></td>
+                    <td><div>Наличие проектора</div></td>
+                    <td><div>Наличие маркерной доски</div></td>
+                </tr>
+            </thead>
+            <tbody id="infotable">
+                @if (ViewBag.MeetingRooms != null)
+                {
+                    foreach (var r in ViewBag.MeetingRooms)
+                    {
+                        <tr>
+                            <td onClick='location.href="RoomDescription/@r.Id"'><div> @r.NumberRoom </div></td>
+                            <td onClick='location.href="RoomDescription/@r.Id"'><div> @r.CountSeats </div></td>
+                            @if (r.Projector)
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div> Есть </div></td>
+                            }
+                            else
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div> Нету </div></td>
+                            }
+                            @if (r.MarkerBoard)
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div> Есть </div></td>
+                            }
+                            else
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div> Нету </div></td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <br />
+        @using (Ajax.BeginForm("Confirm", new AjaxOptions { UpdateTargetId = "results" }))
+        {
+            <input type="hidden" value="0" name="Id" />
+            <input type="submit" value="Посмотреть заявки" />
+        }
+    </div>
+    <div id="results"></div>
+
+}
+else
+{
+    <div>
+        <br />
+        <table border="1" CELLPADDING=10 CELLSPACING=0>
+            <thead>
+                <tr>
+                    <td><div><p></p>Комната №<p></p></div></td>
+                    <td><div><p></p>Количество мест<p></p></div></td>
+                    <td><div><p></p>Наличие проектора<p></p></div></td>
+                    <td><div><p></p>Наличие маркерной доски<p></p></div></td>
+                    <td><div><p></p>Ближайшая бронь<p></p></div></td>
+                </tr>
+            </thead>
+            <tbody id="infotable">
+                @if (ViewBag.MeetingRooms != null)
+                {
+                    foreach (var r in ViewBag.MeetingRooms)
+                    {
+                        DateTime dateTime = new DateTime(1, 1, 1);
+                        <tr>
+                            <td onClick='location.href="RoomDescription/@r.Id"'><div>@r.NumberRoom</div></td>
+                            <td onClick='location.href="RoomDescription/@r.Id"'><div>@r.CountSeats</div></td>
+                            @if (r.Projector)
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div>Есть</div></td>
+                            }
+                            else
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div>Нету</div></td>
+                            }
+                            @if (r.MarkerBoard)
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div> Есть </div></td>
+                            }
+                            else
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div>Нету</div></td>
+                            }
+
+                            @foreach (var rr in ViewBag.RoomReservations)
+                            {
+                                if (rr.RoomId == r.Id && rr.Confirmation && rr.TimeEnd >= DateTime.Now)
+                                {
+                                    if (dateTime == new DateTime(1, 1, 1) || rr.TimeStart < dateTime)
+                                    {
+                                        dateTime = rr.TimeStart;
+                                    }
+                                }
+                            }
+                            @if (dateTime == new DateTime(1, 1, 1))
+                            {
+                                <td onClick='location.href="RoomDescription/@r.Id"'><div>Свободна</div></td>
+                            }
+                            else
+                            {
+                                foreach (var rr in ViewBag.RoomReservations)
+                                {
+                                    if (rr.RoomId == r.Id && rr.Confirmation && rr.TimeEnd >= DateTime.Now && rr.TimeStart == dateTime)
+                                    {
+                                        <td onClick='location.href="RoomDescription/@r.Id"'><div>@dateTime</div></td>
+                                        break;
+                                    }
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@Scripts.Render("~/scripts/jquery-3.3.1.min.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")

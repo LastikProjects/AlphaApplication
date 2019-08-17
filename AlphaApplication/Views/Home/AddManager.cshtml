@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "AddManager";
+}
+
+<h4>Добавление менеджера</h4>
+@if (ViewBag.inscription != "")
+{
+    <div>
+        <br />
+        <p><font color="red" size="3">@ViewBag.inscription</font></p>
+    </div>
+}
+
+<div>
+    <form method="post">
+        <div><p>Название мероприятия:</p></div>
+        <div>
+            <input type="text" name="UserEmail" />
+        </div>
+        <div>
+            <br />
+            <input type="submit" value="Добавить менеджера" />
+        </div>
+    </form>
+    <div><p><br />Выберете Email человека, которого хотите добавить в менеджеры:</p></div>
+    @foreach (var NameUsers in ViewBag.NameUsers)
+    {
+        <div>
+            <p>@NameUsers</p>
+        </div>
+    }
+    <br />
+    @Html.ActionLink("Вернуться к выбору комнаты", "Index")
+</div>

@@ -1,0 +1,90 @@
+﻿
+
+
+@{
+    if (ViewBag.MeetingRooms != null)
+    {
+        foreach (var r in ViewBag.MeetingRooms)
+        {
+            if (r.Id == ViewBag.RoomId)
+            {
+                ViewBag.Title = "Комната № " + r.NumberRoom;
+                break;
+            }
+        }
+    }
+}
+@if (ViewBag.MeetingRooms != null)
+{
+    foreach (var r in ViewBag.MeetingRooms)
+    {
+        if (r.Id == ViewBag.RoomId)
+        {
+            <h2>Бронирование комнаты №@r.NumberRoom</h2>
+            //ViewBag.Title = "Комната № " + r.NumberRoom;
+            break;
+        }
+    }
+}
+@if (ViewBag.MeetingRooms != null)
+{
+    foreach (var r in ViewBag.MeetingRooms)
+    {
+        if (r.Id == ViewBag.RoomId)
+        {
+            <div>
+                <p>В комнате @r.CountSeats мест</p>
+            </div>
+            if (r.Projector)
+            {<div>Присутствует проектор</div>} <div></div>
+            if (r.MarkerBoard)
+            {<div>Присутствует маркерная доска</div>} <div></div>
+            <div>Описание:</div>
+            <p>@r.Description</p>
+            <div>Зарезервированное время:</div>
+            Boolean check = true;
+
+            foreach (var reservation in ViewBag.RoomReservations)
+            {
+                if (reservation.RoomId == ViewBag.RoomId && reservation.TimeEnd >= DateTime.Now && reservation.Confirmation)
+                {
+                    foreach (var users in ViewBag.Users)
+                    {
+                        if (reservation.UserId == users.Id)
+                        {
+                            <p> @reservation.TimeStart - @reservation.TimeEnd - @users.Email</p>
+                            break;
+                        }
+                    }
+                    check = false;
+                }
+            }
+            if (check)
+            {
+                <div>отсутствует</div>
+            }
+            <p><a href="~/Home/ChooseData/@ViewBag.RoomId" class="c">Забронировать</a></p>
+            break;
+        }
+    }
+}
+@if (ViewBag.IsOfficeManager)
+{
+    <br />
+    <a href="~/Home/InformationEditing/@ViewBag.RoomId">Редактировать комнату</a>
+}
+<meta charset="utf-8">
+<title>Ссылка</title>
+<style>
+    .c {
+        border: 1px solid #696969; /* Рамка */
+        display: inline-block;
+        padding: 2px 7px; /* Поля */
+        text-decoration: none; /* Убираем подчёркивание */
+        color: #000000; /* Цвет текста */
+        background: #eee
+    }
+
+    
+</style>
+<div><br />@Html.ActionLink("Вернуться к выбору комнаты", "Index")</div>
